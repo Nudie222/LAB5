@@ -97,7 +97,7 @@ private:
     }
 };
 
-// ==================== СТРУКТУРА ВЕРШИНЫ ====================
+
 struct Vertex {
     glm::vec3 Position;
     glm::vec3 Normal;
@@ -229,7 +229,7 @@ private:
     }
 };
 
-// ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ КАМЕРЫ ====================
+// ==================== ПЕРЕМЕННЫЕ КАМЕРЫ ====================
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -258,7 +258,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
     }
 
     float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // инверсия по Y
+    float yoffset = lastY - ypos; 
     lastX = xpos;
     lastY = ypos;
 
@@ -279,7 +279,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
     cameraFront = glm::normalize(front);
 }
 
-// ==================== CALLBACK ИЗМЕНЕНИЯ РАЗМЕРА ОКНА ====================
+// ==================== РАЗМЕР ОКНА ====================
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
     windowWidth = width;
@@ -324,7 +324,7 @@ int main() {
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    // Регистрируем callback мыши
+ 
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
@@ -336,13 +336,13 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
 
-    // Создаём шейдер
+    
     Shader shader("vertex_shader.glsl", "fragment_shader.glsl");
 
-    // Загружаем модель (ПУТЬ ДОЛЖЕН БЫТЬ ПРАВИЛЬНЫМ!)
+   
     Model ourModel("model/RPM25.obj");
 
-    // Основной цикл
+  
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
@@ -355,21 +355,18 @@ int main() {
 
         shader.use();
 
-        // Матрицы проекции и вида
+
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         shader.setMat4("projection", projection);
         shader.setMat4("view", view);
 
-        // Матрица модели (масштаб на всякий случай увеличен)
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
         shader.setMat4("model", model);
 
-        // Цвет для плоской закраски
         shader.setVec3("lightColor", glm::vec3(0.1f, 1.3f, 1.3f));
 
-        // Рисуем модель
         ourModel.Draw();
 
         glfwSwapBuffers(window);
